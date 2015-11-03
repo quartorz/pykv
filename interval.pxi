@@ -1,4 +1,4 @@
-cdef extern from 'wrappers.hpp':
+cdef extern from 'wrappers.hpp' namespace 'wrappers':
     cdef cppclass kv_interval:
         kv_interval()
         kv_interval(double inf, double sup)
@@ -17,6 +17,9 @@ cdef extern from 'wrappers.hpp':
 
         double &lower()
         double &upper()
+
+    void set_lower(kv_interval &, double)
+    void set_upper(kv_interval &, double)
 
 
 ctypedef kv_interval interval_t
@@ -43,10 +46,10 @@ cdef class interval(object):
         def __get__(self):
             return self.thisptr.lower()
         def __set__(self, x):
-            self.thisptr.lower() = <double>x
+            set_lower(self.thisptr[0], <double>x)
 
     property sup:
         def __get__(self):
             return self.thisptr.upper()
         def __set__(self, x):
-            self.thisptr.upper() = <double>x
+            set_upper(self.thisptr[0], <double>x)
