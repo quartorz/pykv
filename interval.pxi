@@ -34,6 +34,8 @@ cdef class interval(object):
         elif len(args) == 1:
             if isinstance(args[0], str):
                 self.thisptr = new interval_t(<string>args[0].encode('utf-8'))
+            elif isinstance(args[0], bytes):
+                self.thisptr = new interval_t(<string>args[0])
             else:
                 self.thisptr = new interval_t(<double>args[0])
         elif len(args) == 2:
