@@ -10,10 +10,13 @@ cdef extern from 'wrappers.hpp':
         kv_interval operator*(const kv_interval &)
         kv_interval operator/(const kv_interval &)
 
-        kv_interval operator+(float)
-        kv_interval operator-(float)
-        kv_interval operator*(float)
-        kv_interval operator/(float)
+        kv_interval operator+(double)
+        kv_interval operator-(double)
+        kv_interval operator*(double)
+        kv_interval operator/(double)
+
+        double &lower()
+        double &upper()
 
 
 ctypedef kv_interval interval_t
@@ -35,3 +38,15 @@ cdef class interval(object):
 
     def __dealloc__(self):
         del self.thisptr
+
+    property inf:
+        def __get__(self):
+            return self.thisptr.lower()
+        def __set__(self, x):
+            self.thisptr.lower() = <double>x
+
+    property sup:
+        def __get__(self):
+            return self.thisptr.upper()
+        def __set__(self, x):
+            self.thisptr.upper() = <double>x
