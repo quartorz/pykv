@@ -44,6 +44,9 @@ cdef class interval(object):
     def __dealloc__(self):
         del self.thisptr
 
+    def __repr__(self):
+        return 'pykv.interval({0}, {1})'.format(self.inf, self.sup)
+
     property inf:
         def __get__(self):
             return self.thisptr.lower()
