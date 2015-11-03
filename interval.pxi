@@ -35,13 +35,21 @@ cdef extern from 'wrappers.hpp' namespace 'wrappers':
     void set_lower(kv_interval &, double)
     void set_upper(kv_interval &, double)
 
+    double kv_width(const kv_interval &)
+    double kv_rad(const kv_interval &)
+    double kv_mid(const kv_interval &)
+    double kv_median(const kv_interval &)
+    double kv_norm(const kv_interval &)
+    double kv_mag(const kv_interval &)
+    bool kv_in(const double &, const kv_interval &)
+    bool kv_zero_in(const kv_interval &)
+    bool kv_subset(const kv_interval &, const kv_interval &)
+    bool kv_proper_subset(const kv_interval &, const kv_interval &)
+    bool kv_overlap(const kv_interval &, const kv_interval &)
+    kv_interval kv_intersect(const kv_interval &, const kv_interval &)
+
 
 cdef extern from '<kv/interval.hpp>':
-    double width(const kv_interval &)
-    double rad(const kv_interval &)
-    double mid(const kv_interval &)
-    double norm(const kv_interval &)
-    double mag(const kv_interval &)
     kv_interval abs(const kv_interval &)
 
 
@@ -74,11 +82,15 @@ cdef class interval(object):
         return 'pykv.interval({0}, {1})'.format(self.inf, self.sup)
 
 
+    def __str__(self):
+        return '[{0}, {1}]'.format(self.inf, self.sup)
+
+
     def __neg__(self):
         self.thisptr[0] = -deref(self.thisptr)
 
 
-    def __add__(self, other):
+    def __add__(self, other not None):
         cdef interval_t result
 
         if isinstance(other, interval):
@@ -90,7 +102,7 @@ cdef class interval(object):
         return interval(result.lower(), result.upper())
 
 
-    def __sub__(self, other):
+    def __sub__(self, other not None):
         cdef interval_t result
 
         if isinstance(other, interval):
@@ -102,7 +114,7 @@ cdef class interval(object):
         return interval(result.lower(), result.upper())
 
 
-    def __mul__(self, other):
+    def __mul__(self, other not None):
         cdef interval_t result
 
         if isinstance(other, interval):
@@ -114,7 +126,7 @@ cdef class interval(object):
         return interval(result.lower(), result.upper())
 
 
-    def __div__(self, other):
+    def __div__(self, other not None):
         cdef interval_t result
 
         if isinstance(other, interval):
@@ -126,7 +138,7 @@ cdef class interval(object):
         return interval(result.lower(), result.upper())
 
 
-    def __iadd__(self, other):
+    def __iadd__(self, other not None):
         if isinstance(other, interval):
             self.thisptr[0] = deref(self.thisptr) \
                     + deref((<interval>other).thisptr)
@@ -134,7 +146,7 @@ cdef class interval(object):
             self.thisptr[0] = deref(self.thisptr) + <double>other
 
 
-    def __isub__(self, other):
+    def __isub__(self, other not None):
         if isinstance(other, interval):
             self.thisptr[0] = deref(self.thisptr) \
                     - deref((<interval>other).thisptr)
@@ -142,7 +154,7 @@ cdef class interval(object):
             self.thisptr[0] = deref(self.thisptr) - <double>other
 
 
-    def __imul__(self, other):
+    def __imul__(self, other not None):
         if isinstance(other, interval):
             self.thisptr[0] = deref(self.thisptr) \
                     * deref((<interval>other).thisptr)
@@ -150,7 +162,7 @@ cdef class interval(object):
             self.thisptr[0] = deref(self.thisptr) * <double>other
 
 
-    def __idiv__(self, other):
+    def __idiv__(self, other not None):
         if isinstance(other, interval):
             self.thisptr[0] = deref(self.thisptr) \
                     / deref((<interval>other).thisptr)
@@ -166,12 +178,62 @@ cdef class interval(object):
     property inf:
         def __get__(self):
             return self.thisptr.lower()
-        def __set__(self, x):
+        def __set__(self, x not None):
             set_lower(deref(self.thisptr), <double>x)
 
 
     property sup:
         def __get__(self):
             return self.thisptr.upper()
-        def __set__(self, x):
+        def __set__(self, x not None):
             set_upper(deref(self.thisptr), <double>x)
+
+
+    property width:
+        def __get__(self):
+            return width(self)
+
+
+def width(interval i not None):
+    return kv_width(deref(i.thisptr))
+
+
+def rad(interval i not None):
+    return kv_rad(deref(i.thisptr))
+
+
+def mid(interval i not None):
+    return kv_mid(deref(i.thisptr))
+
+
+def median(interval i not None):
+    return kv_median(deref(i.thisptr))
+
+
+def norm(interval i not None):
+    return kv_norm(deref(i.thisptr))
+
+
+def mag(interval i not None):
+    return kv_mag(deref(i.thisptr))
+
+
+def _in(double a, interval i not None):
+    return kv_in(a, deref(i.thisptr))
+
+
+def zero_in(interval i not None):
+    return kv_zero_in(deref(i.thisptr))
+
+
+def subset(interval x not None, interval y not None):
+    return kv_subset(deref(x.thisptr), deref(y.thisptr))
+
+
+def overlap(interval x not None, interval y not None):
+    return kv_overlap(deref(x.thisptr), deref(y.thisptr))
+
+
+def intersect(interval x not None, interval y not None):
+    cdef interval_t result = kv_intersect(deref(x.thisptr), deref(y.thisptr))
+    return interval(result.lower(), result.upper())

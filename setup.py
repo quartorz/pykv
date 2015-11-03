@@ -6,7 +6,7 @@ from Cython.Build import cythonize
 
 setup(
         name='pykv',
-        version='0.0.2',
+        version='0.0.3',
         description='wrapper library for kv',
         author='',
         ext_modules=cythonize(
