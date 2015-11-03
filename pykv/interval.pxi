@@ -17,13 +17,13 @@ cdef extern from 'wrappers.hpp' namespace 'wrappers':
         kv_interval operator*(double)
         kv_interval operator/(double)
 
-        # not yet supported
+        # not yet supported at Cython 0.23.4
         # kv_interval operator+=(const kv_interval &)
         # kv_interval operator-=(const kv_interval &)
         # kv_interval operator*=(const kv_interval &)
         # kv_interval operator/=(const kv_interval &)
 
-        # not yet supported
+        # not yet supported at Cython 0.23.4
         # kv_interval operator+=(double)
         # kv_interval operator-=(double)
         # kv_interval operator*=(double)
@@ -35,22 +35,21 @@ cdef extern from 'wrappers.hpp' namespace 'wrappers':
     void set_lower(kv_interval &, double)
     void set_upper(kv_interval &, double)
 
-    double kv_width(const kv_interval &)
-    double kv_rad(const kv_interval &)
-    double kv_mid(const kv_interval &)
-    double kv_median(const kv_interval &)
-    double kv_norm(const kv_interval &)
-    double kv_mag(const kv_interval &)
-    bool kv_in(const double &, const kv_interval &)
-    bool kv_zero_in(const kv_interval &)
-    bool kv_subset(const kv_interval &, const kv_interval &)
-    bool kv_proper_subset(const kv_interval &, const kv_interval &)
-    bool kv_overlap(const kv_interval &, const kv_interval &)
-    kv_interval kv_intersect(const kv_interval &, const kv_interval &)
-
 
 cdef extern from '<kv/interval.hpp>':
     kv_interval abs(const kv_interval &)
+    double kv_width'width'(const kv_interval &)
+    double kv_rad'rad'(const kv_interval &)
+    double kv_mid'mid'(const kv_interval &)
+    double kv_median'median'(const kv_interval &)
+    double kv_norm'norm'(const kv_interval &)
+    double kv_mag'mag'(const kv_interval &)
+    bool kv_in'in'(const double &, const kv_interval &)
+    bool kv_zero_in'zero_in'(const kv_interval &)
+    bool kv_subset'subset'(const kv_interval &, const kv_interval &)
+    bool kv_proper_subset'proper_subset'(const kv_interval &, const kv_interval &)
+    bool kv_overlap'overlap'(const kv_interval &, const kv_interval &)
+    kv_interval kv_intersect'intersect'(const kv_interval &, const kv_interval &)
 
 
 ctypedef kv_interval interval_t
@@ -94,8 +93,8 @@ cdef class interval(object):
         cdef interval_t result
 
         if isinstance(other, interval):
-            result = deref((<interval>self).thisptr) \
-                    + deref((<interval>other).thisptr)
+            result = deref((<interval>self).thisptr) + \
+                     deref((<interval>other).thisptr)
         else:
             result = deref((<interval>self).thisptr) + <double>other
 
@@ -106,8 +105,8 @@ cdef class interval(object):
         cdef interval_t result
 
         if isinstance(other, interval):
-            result = deref((<interval>self).thisptr) \
-                    - deref((<interval>other).thisptr)
+            result = deref((<interval>self).thisptr) - \
+                     deref((<interval>other).thisptr)
         else:
             result = deref((<interval>self).thisptr) - <double>other
 
@@ -118,8 +117,8 @@ cdef class interval(object):
         cdef interval_t result
 
         if isinstance(other, interval):
-            result = deref((<interval>self).thisptr) \
-                    * deref((<interval>other).thisptr)
+            result = deref((<interval>self).thisptr) * \
+                     deref((<interval>other).thisptr)
         else:
             result = deref((<interval>self).thisptr) * <double>other
 
@@ -130,8 +129,8 @@ cdef class interval(object):
         cdef interval_t result
 
         if isinstance(other, interval):
-            result = deref((<interval>self).thisptr) \
-                    / deref((<interval>other).thisptr)
+            result = deref((<interval>self).thisptr) / \
+                     deref((<interval>other).thisptr)
         else:
             result = deref((<interval>self).thisptr) / <double>other
 
@@ -140,32 +139,32 @@ cdef class interval(object):
 
     def __iadd__(self, other not None):
         if isinstance(other, interval):
-            self.thisptr[0] = deref(self.thisptr) \
-                    + deref((<interval>other).thisptr)
+            self.thisptr[0] = deref(self.thisptr) + \
+                              deref((<interval>other).thisptr)
         else:
             self.thisptr[0] = deref(self.thisptr) + <double>other
 
 
     def __isub__(self, other not None):
         if isinstance(other, interval):
-            self.thisptr[0] = deref(self.thisptr) \
-                    - deref((<interval>other).thisptr)
+            self.thisptr[0] = deref(self.thisptr) - \
+                              deref((<interval>other).thisptr)
         else:
             self.thisptr[0] = deref(self.thisptr) - <double>other
 
 
     def __imul__(self, other not None):
         if isinstance(other, interval):
-            self.thisptr[0] = deref(self.thisptr) \
-                    * deref((<interval>other).thisptr)
+            self.thisptr[0] = deref(self.thisptr) * \
+                              deref((<interval>other).thisptr)
         else:
             self.thisptr[0] = deref(self.thisptr) * <double>other
 
 
     def __idiv__(self, other not None):
         if isinstance(other, interval):
-            self.thisptr[0] = deref(self.thisptr) \
-                    / deref((<interval>other).thisptr)
+            self.thisptr[0] = deref(self.thisptr) / \
+                              deref((<interval>other).thisptr)
         else:
             self.thisptr[0] = deref(self.thisptr) / <double>other
 

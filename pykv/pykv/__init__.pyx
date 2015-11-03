@@ -10,6 +10,8 @@ from __future__ import unicode_literals
 from libcpp cimport bool
 from libcpp.string cimport string
 from cython.operator cimport dereference as deref
+# import numpy as np
+# cimport numpy as np
 
 
 include 'interval.pxi'
